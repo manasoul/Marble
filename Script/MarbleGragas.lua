@@ -15,7 +15,7 @@
 ]]--
 
 if myHero.charName ~= "Gragas" then return end
-local version = 1.06
+local version = 1.09
 local AUTOUPDATE = true
 local SCRIPT_NAME = "MarbleGrgas"
 
