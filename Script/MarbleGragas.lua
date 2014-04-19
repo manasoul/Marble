@@ -3,6 +3,8 @@
                                    Marble Gragas Script 
 ==============================================================================================
 	Changelog:
+		1.09:
+			-Fix auto update
 		1.07:
 			-Fix bug barrel sometime don't cast
 		1.06:
@@ -17,7 +19,7 @@
 if myHero.charName ~= "Gragas" then return end
 local version = 1.09
 local AUTOUPDATE = true
-local SCRIPT_NAME = "MarbleGrgas"
+local SCRIPT_NAME = "MarbleGragas"
 
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
@@ -36,11 +38,11 @@ end
 if DOWNLOADING_SOURCELIB then print("Downloading required libraries, please wait...") return end
 
 if AUTOUPDATE then
-	 SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/manasoul/Marble/master/Script"..SCRIPT_NAME..".lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/manasoul/Marble/master/Version"..SCRIPT_NAME..".version"):CheckUpdate()
+	 SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/manasoul/Marble/master/Script/"..SCRIPT_NAME..".lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/manasoul/Marble/master/Version/"..SCRIPT_NAME..".version"):CheckUpdate()
 end
 
 local RequireI = Require("SourceLib")
-RequireI:Add("vPrediction", "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua")
+RequireI:Add("VPrediction", "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua")
 RequireI:Add("SOW", "https://raw.github.com/honda7/BoL/master/Common/SOW.lua")
 RequireI:Check()
 
@@ -49,20 +51,15 @@ if RequireI.downloadNeeded == true then return end
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
-
-require "VPrediction"
-require "SOW" 
-require "SourceLib"
-	
 local barrel = nil	
 local barrelmis = nil
 local barrelTime = 0
 
 --Spell data
 local Ranges = {[_Q] = 775 + 75,[_W] = 0, [_E] = 650 + 40, [_R] = 1050}
-local Delays = {[_Q] = 0.2, [_E] = 0.1, [_R] = 0.2}
+local Delays = {[_Q] = 0.25, [_E] = 0, [_R] = 0.5}
 local Widths = {[_Q] = 310, [_E] = 100, [_R] = 375}
-local Speeds = {[_Q] = 2400, [_E] = 2400, [_R] = 4800}
+local Speeds = {[_Q] = 1600, [_E] = 2000, [_R] = 2000}
 
 local LastR = 0
 
@@ -316,6 +313,7 @@ function AutoQExplore()
 				end
 				if DLib:IsKillable(enemy, {_Qc}) or (DLib:CalcSpellDamage(enemy,_Qc) * 1.5 > enemy.health and GetGameTimer() - barrelTime >= 2.1) then CastSpell(_Q) end
 				if GetGameTimer() - barrelTime >= 2.1 then CastSpell(_Q)	end
+				if not ValidTarget(enemy) then CastSpell(_Q) end
 			end
 		end
 	end
