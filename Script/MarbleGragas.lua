@@ -15,42 +15,44 @@
 ]]--
 
 if myHero.charName ~= "Gragas" then return end
-local version = 1.09
+local version = 1.06
 local AUTOUPDATE = true
+local SCRIPT_NAME = "MarbleGrgas"
 
-local REQUIRED_LIBS = {
-	["VPrediction"] = "https://bitbucket.org/honda7/bol/raw/master/Common/VPrediction.lua",
-	["SOW"] = "https://bitbucket.org/honda7/bol/raw/master/Common/SOW.lua",
-	["SourceLib"] = "https://bitbucket.org/TheRealSource/public/raw/master/common/SourceLib.lua",
-	
-}
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
 
-local DOWNLOADING_LIBS, DOWNLOAD_COUNT = false, 0
-local SELF_NAME = GetCurrentEnv() and GetCurrentEnv().FILE_NAME or ""
+local SOURCELIB_URL = "https://raw.github.com/TheRealSource/public/master/common/SourceLib.lua"
+local SOURCELIB_PATH = LIB_PATH.."SourceLib.lua"
 
-function AfterDownload()
-	DOWNLOAD_COUNT = DOWNLOAD_COUNT - 1
-	if DOWNLOAD_COUNT == 0 then
-		DOWNLOADING_LIBS = false
-		print("<b>[Gragas]: Required libraries downloaded successfully, please reload (double F9).</b>")
-	end
+if FileExist(SOURCELIB_PATH) then
+	require("SourceLib")
+else
+	DOWNLOADING_SOURCELIB = true
+	DownloadFile(SOURCELIB_URL, SOURCELIB_PATH, function() print("Required libraries downloaded successfully, please reload") end)
 end
 
-for DOWNLOAD_LIB_NAME, DOWNLOAD_LIB_URL in pairs(REQUIRED_LIBS) do
-	if FileExist(LIB_PATH .. DOWNLOAD_LIB_NAME .. ".lua") then
-		require(DOWNLOAD_LIB_NAME)
-	else
-		DOWNLOADING_LIBS = true
-		DOWNLOAD_COUNT = DOWNLOAD_COUNT + 1
-		DownloadFile(DOWNLOAD_LIB_URL, LIB_PATH .. DOWNLOAD_LIB_NAME..".lua", AfterDownload)
-	end
+if DOWNLOADING_SOURCELIB then print("Downloading required libraries, please wait...") return end
+
+if AUTOUPDATE then
+	 SourceUpdater(SCRIPT_NAME, version, "raw.github.com", "/manasoul/Marble/master/Script"..SCRIPT_NAME..".lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME, "/manasoul/Marble/master/Version"..SCRIPT_NAME..".version"):CheckUpdate()
 end
 
-if DOWNLOADING_LIBS then return end
+local RequireI = Require("SourceLib")
+RequireI:Add("vPrediction", "https://raw.github.com/honda7/BoL/master/Common/VPrediction.lua")
+RequireI:Add("SOW", "https://raw.github.com/honda7/BoL/master/Common/SOW.lua")
+RequireI:Check()
 
-	require "VPrediction"
-	require "SOW" 
-	require "SourceLib"
+if RequireI.downloadNeeded == true then return end
+
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------
+
+require "VPrediction"
+require "SOW" 
+require "SourceLib"
 	
 local barrel = nil	
 local barrelmis = nil
@@ -68,10 +70,6 @@ local LastR = 0
 --Combo data
 local MainCombo = {ItemManager:GetItem("DFG"):GetId(), _Q, _W, _E, _R, _IGNITE}
 local cMainCombo = {ItemManager:GetItem("DFG"):GetId(), _Qc, _Wc, _Ec, _Rc, _IGNITE}
-
-if AUTOUPDATE then
-	 LazyUpdater("MarbleGragas", version, "bitbucket.org", "/manasoul/bol/raw/master/MarbleGragas.lua", SCRIPT_PATH .. GetCurrentEnv().FILE_NAME):SetSilent(false):CheckUpdate()
-end
 
 function Init()
 	VP = VPrediction()
