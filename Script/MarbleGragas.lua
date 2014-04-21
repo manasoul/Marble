@@ -18,7 +18,7 @@
 ]]--
 
 if myHero.charName ~= "Gragas" then return end
-local version = 1.10
+local version = 1.11
 local AUTOUPDATE = true
 local SCRIPT_NAME = "MarbleGragas"
  
@@ -331,15 +331,15 @@ function OnProcessSpell(unit,spell)
 end
 
 function OnCreateObj(obj)
-	if obj.name:find("Q_Mis") then barrelmis = obj end
-	if obj.name:find("Q_Ally") then
+	if obj.name:find("Gragas") and obj.name:find("Q_Mis") then barrelmis = obj end
+	if obj.name:find("Gragas") and obj.name:find("Q_Ally") then
 		barrel = obj
 		barrelTime = GetGameTimer()
 	end
 end
 
 function OnDeleteObj(obj)
-	if obj.name:find("Q_End") then
+	if obj.name:find("Gragas") and obj.name:find("Q_End") then
 		barrel = nil
 		barrelmis = nil
 	end
