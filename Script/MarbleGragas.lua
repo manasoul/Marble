@@ -3,8 +3,9 @@
                                    Marble Gragas Script 
 ==============================================================================================
 	Changelog:
-		1.09:
+		1.10:
 			-Fix auto update
+			-Fix bug barrel that won't explore when using gragas with other skin - thanks to  ilikeman
 		1.07:
 			-Fix bug barrel sometime don't cast
 		1.06:
@@ -17,10 +18,10 @@
 ]]--
 
 if myHero.charName ~= "Gragas" then return end
-local version = 1.09
+local version = 1.10
 local AUTOUPDATE = true
 local SCRIPT_NAME = "MarbleGragas"
-
+ 
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------------------
@@ -56,10 +57,10 @@ local barrelmis = nil
 local barrelTime = 0
 
 --Spell data
-local Ranges = {[_Q] = 775 + 75,[_W] = 0, [_E] = 650 + 40, [_R] = 1050}
+local Ranges = {[_Q] = 775 + 75,[_W] = 0, [_E] = 650 + 43, [_R] = 1050}
 local Delays = {[_Q] = 0.25, [_E] = 0, [_R] = 0.5}
-local Widths = {[_Q] = 310, [_E] = 100, [_R] = 375}
-local Speeds = {[_Q] = 1600, [_E] = 2000, [_R] = 2000}
+local Widths = {[_Q] = 300, [_E] = 93, [_R] = 375}
+local Speeds = {[_Q] = 1000, [_E] = 2800, [_R] = 2000}
 
 local LastR = 0
 
@@ -80,7 +81,7 @@ function Init()
 	R = Spell(_R,Ranges[_R],true)
 	W = Spell(_W,Ranges[_W],true)
 	
-	Q:SetSkillshot(VP,SKILLSHOT_CIRCULAR ,Widths[_Q],Delays[_Q],Speeds[_Q],false)
+	Q:SetSkillshot(VP,SKILLSHOT_CIRCULAR,Widths[_Q],Delays[_Q],Speeds[_Q],false)
 	E:SetSkillshot(VP,SKILLSHOT_LINEAR,Widths[_E],Delays[_E],Speeds[_E],true)
 	R:SetSkillshot(VP,SKILLSHOT_LINEAR ,Widths[_R],Delays[_R],Speeds[_R],false)
 	Q:SetAOE(true,Q.width,0)
@@ -305,8 +306,8 @@ end
 function AutoQExplore()
 	if Menu.Misc.AutoQ then
 		for i,enemy in ipairs(enemyChamp) do
-			local rangeAllow = Widths[_Q] - 15
-			local rangeToPop = Widths[_Q] - 5
+			local rangeAllow = Widths[_Q] - 5
+			local rangeToPop = Widths[_Q] 
 			if ValidTarget(enemy) and barrel and GetDistance(barrel,enemy) <= rangeToPop then
 				if not (GetDistance(barrel,enemy) <= rangeAllow - GetDistance(enemy.minBBox, enemy.maxBBox)/2) then
 					CastSpell(_Q)
@@ -330,15 +331,15 @@ function OnProcessSpell(unit,spell)
 end
 
 function OnCreateObj(obj)
-	if obj.name:find("Gragas_Base_Q_Mis") then barrelmis = obj end
-	if obj.name:find("Gragas_Base_Q_Ally") then
+	if obj.name:find("Q_Mis") then barrelmis = obj end
+	if obj.name:find("Q_Ally") then
 		barrel = obj
 		barrelTime = GetGameTimer()
 	end
 end
 
 function OnDeleteObj(obj)
-	if obj.name:find("Gragas_Base_Q_End") then
+	if obj.name:find("Q_End") then
 		barrel = nil
 		barrelmis = nil
 	end
