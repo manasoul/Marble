@@ -306,7 +306,7 @@ end
 function AutoQExplore()
 	if Menu.Misc.AutoQ then
 		for i,enemy in ipairs(enemyChamp) do
-			local rangeAllow = Widths[_Q] - 5
+			local rangeAllow = Widths[_Q] - 15
 			local rangeToPop = Widths[_Q] 
 			if ValidTarget(enemy) and barrel and GetDistance(barrel,enemy) <= rangeToPop then
 				if not (GetDistance(barrel,enemy) <= rangeAllow - GetDistance(enemy.minBBox, enemy.maxBBox)/2) then
