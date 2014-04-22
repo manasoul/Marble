@@ -60,7 +60,7 @@ local barrelTime = 0
 local Ranges = {[_Q] = 775 + 75,[_W] = 0, [_E] = 650 + 43, [_R] = 1050}
 local Delays = {[_Q] = 0.25, [_E] = 0, [_R] = 0.5}
 local Widths = {[_Q] = 300, [_E] = 93, [_R] = 375}
-local Speeds = {[_Q] = 1000, [_E] = 2800, [_R] = 2000}
+local Speeds = {[_Q] = 1000, [_E] = 2800, [_R] = math.huge}
 
 local LastR = 0
 
